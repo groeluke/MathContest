@@ -36,8 +36,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Name = "MathContest";
-            Text = "Form1";
-            Load += MathContest_Load;
+            Text = "Math Contest";
             ResumeLayout(false);
         }
 
