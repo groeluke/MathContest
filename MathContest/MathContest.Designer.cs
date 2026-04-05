@@ -1,6 +1,6 @@
 ﻿namespace MathContest
 {
-    partial class Form1
+    partial class MathContest
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,10 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            SuspendLayout();
+            // 
+            // MathContest
+            // 
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Name = "MathContest";
             Text = "Form1";
+            Load += MathContest_Load;
+            ResumeLayout(false);
         }
 
         #endregion
