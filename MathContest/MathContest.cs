@@ -13,11 +13,31 @@ namespace MathContest
         public MathContest()
         {
             InitializeComponent();
+            SetDefaults();
         }
 
-        private void groupBox1_Enter(object sender, EventArgs e)
+        //Custom Methods ------------------------------------------------------
+        void SetDefaults()
         {
-
+            NameTextBox.Text = "";
+            GradeTextBox.Text = "";
+            AgeTextBox.Text = "";
+            FirstNumberTextBox.Text = "";
+            SecondNumberTextBox.Text = "";
+            StudentAnswerTextBox.Text = "";
+            AddRadioButton.Checked = true;
+            SubmitButton.Enabled = false;
+            SummeryButton.Enabled = false;
         }
+
+
+        void ValidateFields()
+        {
+            bool valid = true;
+            if (string.IsNullOrEmpty(NameTextBox.Text))
+                valid = false;
+        }
+
+        // Event Handlers -----------------------------------------------------
     }
 }
