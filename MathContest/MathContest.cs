@@ -29,6 +29,8 @@ namespace MathContest
             AddRadioButton.Checked = true;
             SubmitButton.Enabled = false;
             SummeryButton.Enabled = false;
+            ProblemTypeGroupBox.Enabled = false;
+            StudentAnswerLabel.Enabled = false;
         }
 
 
@@ -39,30 +41,37 @@ namespace MathContest
                 // Check if the name field is empty
             {
                 valid = false;
+                NameTextBox.BackColor = Color.LightYellow;
             }
             else
             {
                 valid = true;
+                NameTextBox.BackColor = Color.White;
             }
             if (string.IsNullOrEmpty(GradeTextBox.Text))
                 // Check if the grade field is empty
             {
                 valid = false;
+                GradeTextBox.BackColor = Color.LightYellow;
             }
             else
             {
                 valid = true;
+                GradeTextBox.BackColor = Color.White;
             }
             if (string.IsNullOrEmpty(AgeTextBox.Text))
                 // Check if the age field is empty
             {
                 valid = false;
+                AgeTextBox.BackColor = Color.LightYellow;
             }
             else
             {
                 valid = true;
+                AgeTextBox.BackColor = Color.White;
             }
         }
+
         void GenerateProblem()
         {
             Random random = new Random();
@@ -72,9 +81,8 @@ namespace MathContest
             SecondNumberTextBox.Text = secondNumber.ToString();
         }
         
-        bool MathProblemSolved()
+        bool MathProblemSolved(decimal studentAnswer)
         {
-            GenerateProblem();
             bool valid = false;
             int firstNumber = int.Parse(FirstNumberTextBox.Text);
             int secondNumber = int.Parse(SecondNumberTextBox.Text);
@@ -130,14 +138,31 @@ namespace MathContest
                     // Generate division problem
                     break;
                 }
-            return true;
+            return valid;
         }
         // Event Handlers -----------------------------------------------------
 
         private void SubmitButton_Click(object sender, EventArgs e)
         {
-            MathProblemSolved();
-
+            decimal studentAnswer;
+            if (decimal.TryParse(StudentAnswerTextBox.Text, out studentAnswer))
+            {
+                MathProblemSolved(studentAnswer);
+            }
+            else
+            {
+                // Handle invalid input
+            }
+        }
+        private void SummeryButton_Click(object sender, EventArgs e)
+        {
+            int totalProblems = 0; // Track total problems attempted
+            SubmitButton.Click += (s, args) => totalProblems++;
+            SummeryButton.Click += (s, args) =>
+            {
+                MessageBox.Show($"Total Problems Attempted: {totalProblems}");
+            };
+            // Display summary of results
         }
         private void ClearButton_Click(object sender, EventArgs e)
         {
@@ -147,6 +172,21 @@ namespace MathContest
         private void ExitButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void NameTextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateFields();
+        }
+
+        private void GradeTextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateFields();
+        }
+
+        private void AgeTextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateFields();
         }
 
     }

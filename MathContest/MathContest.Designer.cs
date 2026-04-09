@@ -122,7 +122,7 @@
             StudentInformationGroupBox.Location = new Point(12, 2);
             StudentInformationGroupBox.Name = "StudentInformationGroupBox";
             StudentInformationGroupBox.Size = new Size(558, 120);
-            StudentInformationGroupBox.TabIndex = 5;
+            StudentInformationGroupBox.TabIndex = 1;
             StudentInformationGroupBox.TabStop = false;
             StudentInformationGroupBox.Text = "Student Information";
             MainToolTip.SetToolTip(StudentInformationGroupBox, "Please enter all the  students information before being able to submit.");
@@ -187,7 +187,7 @@
             MathProblemGroupBox.Location = new Point(12, 128);
             MathProblemGroupBox.Name = "MathProblemGroupBox";
             MathProblemGroupBox.Size = new Size(300, 310);
-            MathProblemGroupBox.TabIndex = 6;
+            MathProblemGroupBox.TabIndex = 3;
             MathProblemGroupBox.TabStop = false;
             MathProblemGroupBox.Text = "Current Math Problem";
             MainToolTip.SetToolTip(MathProblemGroupBox, "Solve with these numbers using the problem type.");
@@ -250,7 +250,7 @@
             ProblemTypeGroupBox.Location = new Point(318, 128);
             ProblemTypeGroupBox.Name = "ProblemTypeGroupBox";
             ProblemTypeGroupBox.Size = new Size(252, 310);
-            ProblemTypeGroupBox.TabIndex = 7;
+            ProblemTypeGroupBox.TabIndex = 2;
             ProblemTypeGroupBox.TabStop = false;
             ProblemTypeGroupBox.Text = "Math Problem Type";
             MainToolTip.SetToolTip(ProblemTypeGroupBox, "Select a type of problem to solve.");
