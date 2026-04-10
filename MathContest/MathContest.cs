@@ -47,8 +47,8 @@ namespace MathContest
             incorrectCount = 0;
             totalAttempts = 0;
             SummeryButton.Enabled = false;
-            // Reset any of the summary tracking variables and disable -
-            // the summary button until at least one problem has been attempted
+            // Reset any of the summary tracking variables and disable the
+            // summary button until at least one problem has been attempted
         }
 
 
@@ -56,7 +56,7 @@ namespace MathContest
         {
             bool valid = true;
 
-            // Name - cannot be empty
+            // Name text box cannot be empty
             if (string.IsNullOrEmpty(NameTextBox.Text.Trim()))
             {
                 valid = false;
@@ -67,7 +67,7 @@ namespace MathContest
                 NameTextBox.BackColor = Color.White;
             }
 
-            // Grade must be integer 1-4
+            // Grade text box must be in the range of 1-4
             int grade;
             if (!int.TryParse(GradeTextBox.Text.Trim(), out grade) || grade < 1 || grade > 4)
             {
@@ -79,7 +79,7 @@ namespace MathContest
                 GradeTextBox.BackColor = Color.White;
             }
 
-            // Age must be integer 7-11
+            // Age text box must be in the range 7-11
             int age;
             if (!int.TryParse(AgeTextBox.Text.Trim(), out age) || age < 7 || age > 11)
             {
@@ -103,12 +103,8 @@ namespace MathContest
                     SubmitButton.Enabled = true;
                     GenerateProblem();   // First problem for this student
                 }
-                else
-                {
-                    SubmitButton.Enabled = true;
-                }
             }
-            else
+            else // Don't allow the user to interact with the form until all fields are valid
             {
                 SubmitButton.Enabled = false;
                 ProblemTypeGroupBox.Enabled = false;
@@ -120,10 +116,11 @@ namespace MathContest
         void GenerateProblem()
         {
             Random random = new Random();
-            int firstNumber = random.Next(1, 25);
-            int secondNumber = random.Next(1, 25);
+            int firstNumber = random.Next(1, 15);
+            int secondNumber = random.Next(1, 15);
             FirstNumberTextBox.Text = firstNumber.ToString();
             SecondNumberTextBox.Text = secondNumber.ToString();
+            // Generate new random numbers for the problem
         }
 
         bool MathProblemSolved(decimal studentAnswer)
@@ -131,12 +128,14 @@ namespace MathContest
             bool valid = false;
             int firstNumber = int.Parse(FirstNumberTextBox.Text);
             int secondNumber = int.Parse(SecondNumberTextBox.Text);
+            // 
 
             switch (true)
             {
                 case bool when AddRadioButton.Checked:
                     int sum = firstNumber + secondNumber;
                     if (StudentAnswerTextBox.Text == sum.ToString())
+                        // Compare the student's answer to the correct answer
                     {
                         valid = true;
                     }
@@ -149,6 +148,7 @@ namespace MathContest
                 case bool when SubtractRadioButton.Checked:
                     int difference = firstNumber - secondNumber;
                     if (StudentAnswerTextBox.Text == difference.ToString())
+                        // Compare the student's answer to the correct answer
                     {
                         valid = true;
                     }
@@ -161,6 +161,7 @@ namespace MathContest
                 case bool when MultiplyRadioButton.Checked:
                     int product = firstNumber * secondNumber;
                     if (StudentAnswerTextBox.Text == product.ToString())
+                        // Compare the student's answer to the correct answer
                     {
                         valid = true;
                     }
@@ -173,6 +174,7 @@ namespace MathContest
                 case bool when DivideRadioButton.Checked:
                     int quotient = firstNumber / secondNumber;
                     if (StudentAnswerTextBox.Text == quotient.ToString())
+                        // Compare the student's answer to the correct answer
                     {
                         valid = true;
                     }
@@ -184,53 +186,52 @@ namespace MathContest
                     break;
             }
             return valid;
+            // figure out which operation is selected and check if the users answer is correct
         }
 
         // Event Handlers -----------------------------------------------------
         private void SubmitButton_Click(object sender, EventArgs e)
         {
-            if (!decimal.TryParse(StudentAnswerTextBox.Text.Trim(), out decimal studentAnswer))
-            {
-                MessageBox.Show("Please enter a valid number.", "Invalid Answer");
-                return;
-            }
-
+            int studentAnswer = int.Parse(StudentAnswerTextBox.Text);
             bool isCorrect = MathProblemSolved(studentAnswer);
             totalAttempts++;
 
-            if (isCorrect)
+            if (isCorrect) // if correct increment the count and show that to the user
             {
                 correctCount++;
                 MessageBox.Show("Correct nice work!", correctCount + " correct");
             }
-            else
+            else // if incorrect increment the count and show that to the user
             {
                 incorrectCount++;
-                int correctAnswer = AddRadioButton.Checked ? int.Parse(FirstNumberTextBox.Text) + int.Parse(SecondNumberTextBox.Text) :
-                                  SubtractRadioButton.Checked ? int.Parse(FirstNumberTextBox.Text) - int.Parse(SecondNumberTextBox.Text) :
-                                  MultiplyRadioButton.Checked ? int.Parse(FirstNumberTextBox.Text) * int.Parse(SecondNumberTextBox.Text) :
-                                  (int.Parse(SecondNumberTextBox.Text) != 0 ? int.Parse(FirstNumberTextBox.Text) / int.Parse(SecondNumberTextBox.Text) : 0);
-
-                MessageBox.Show($"Sorry, the correct answer is {correctAnswer}.", "Math Contest");
+                MessageBox.Show($"Sorry, that is incorrect.", "Math Contest");
             }
             StudentAnswerTextBox.Clear();
             GenerateProblem();
             SummeryButton.Enabled = true;
+            // Check the user's answer, update the counts of correct and
+            // incorrect answers, and provide feedback to the user.
+            // Then generate a new problem for the user to solve.
         }
 
         private void ClearButton_Click(object sender, EventArgs e)
         {
             SetDefaults();
             ValidateFields();
+            // Clear all fields and reset the form to its default state
         }
 
         private void SummeryButton_Click(object sender, EventArgs e)
         {
             int totalProblems = 0; // Track total problems attempted
-            SubmitButton.Click += (s, args) => totalProblems++;
-            SummeryButton.Click += (s, args) =>
+            SubmitButton.Click += (s, args) => totalProblems++; 
+            // Increment total problems attempted each time the submit button is clicked
+            SummeryButton.Click += (s, args) => 
+            // Display the summary of results when the summary button is clicked
             {
-                MessageBox.Show($"{NameTextBox.Text} got {correctCount++} out of possible {totalAttempts++} problems.");
+                MessageBox.Show($"" +
+                    $"     {NameTextBox.Text} got {correctCount++} out\n" +
+                    $"of possible {totalAttempts++} problems.");
             };
             // Display summary of results
         }
@@ -238,48 +239,56 @@ namespace MathContest
         private void ExitButton_Click(object sender, EventArgs e)
         {
             this.Close();
+            // Close the form
         }
 
         private void AddRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (AddRadioButton.Checked)
                 GenerateProblem();
+            //generate a new problem when the user changes the operation type
         }
 
         private void SubtractRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (SubtractRadioButton.Checked)
                 GenerateProblem();
+            //generate a new problem when the user changes the operation type
         }
 
         private void MultiplyRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (MultiplyRadioButton.Checked)
                 GenerateProblem();
+            //generate a new problem when the user changes the operation type
         }
 
         private void DivideRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (DivideRadioButton.Checked)
                 GenerateProblem();
+            //generate a new problem when the user changes the operation type
         }
 
         private void NameTextBox_TextChanged(object sender, EventArgs e)
         {
             ResetSummary();
             ValidateFields();
+            // reset the summary and validate fields if the users name changes
         }
 
         private void AgeTextBox_TextChanged(object sender, EventArgs e)
         {
             ResetSummary();
             ValidateFields();
+            // reset the summary and validate fields if the users age changes
         }
 
         private void GradeTextBox_TextChanged(object sender, EventArgs e)
         {
             ResetSummary();
             ValidateFields();
+            // reset the summary and validate fields if the users grade changes
         }
     }
 }
