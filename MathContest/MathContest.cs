@@ -31,44 +31,75 @@ namespace MathContest
             SummeryButton.Enabled = false;
             ProblemTypeGroupBox.Enabled = false;
             StudentAnswerLabel.Enabled = false;
+            FirstNumberTextBox.ReadOnly = true;
+            SecondNumberTextBox.ReadOnly = true;
+            StudentAnswerTextBox.Enabled = false;
+            // Set default values for all controls and reset any state variables as needed
         }
-
 
         void ValidateFields()
         {
             bool valid = true;
-            if (string.IsNullOrEmpty(NameTextBox.Text))
-                // Check if the name field is empty
+
+            // Name - cannot be empty
+            if (string.IsNullOrEmpty(NameTextBox.Text.Trim()))
             {
                 valid = false;
                 NameTextBox.BackColor = Color.LightYellow;
             }
             else
             {
-                valid = true;
                 NameTextBox.BackColor = Color.White;
             }
-            if (string.IsNullOrEmpty(GradeTextBox.Text))
-                // Check if the grade field is empty
+
+            // Grade - must be integer 1-4
+            int grade;
+            if (!int.TryParse(GradeTextBox.Text.Trim(), out grade) || grade < 1 || grade > 4)
             {
                 valid = false;
                 GradeTextBox.BackColor = Color.LightYellow;
             }
             else
             {
-                valid = true;
                 GradeTextBox.BackColor = Color.White;
             }
-            if (string.IsNullOrEmpty(AgeTextBox.Text))
-                // Check if the age field is empty
+
+            // Age - must be integer 7-11
+            int age;
+            if (!int.TryParse(AgeTextBox.Text.Trim(), out age) || age < 7 || age > 11)
             {
                 valid = false;
                 AgeTextBox.BackColor = Color.LightYellow;
             }
             else
             {
-                valid = true;
                 AgeTextBox.BackColor = Color.White;
+            }
+
+            // Enable the contest area ONLY when all student info is valid
+            if (valid)
+            {
+                // Only generate a new problem the first time the contest becomes enabled
+                // (prevents regenerating on every keystroke after the student info is valid)
+                if (!ProblemTypeGroupBox.Enabled)
+                {
+                    ProblemTypeGroupBox.Enabled = true;
+                    StudentAnswerTextBox.Enabled = true;
+                    StudentAnswerLabel.Enabled = true;
+                    SubmitButton.Enabled = true;
+                    GenerateProblem();   // First problem for this student
+                }
+                else
+                {
+                    SubmitButton.Enabled = true;
+                }
+            }
+            else
+            {
+                SubmitButton.Enabled = false;
+                ProblemTypeGroupBox.Enabled = false;
+                StudentAnswerTextBox.Enabled = false;
+                StudentAnswerLabel.Enabled = false;
             }
         }
 
@@ -144,16 +175,52 @@ namespace MathContest
 
         private void SubmitButton_Click(object sender, EventArgs e)
         {
+            int totalAttempts = 0;
+            int correctCount = 0;
+            int incorrectCount = 0;
+
             decimal studentAnswer;
-            if (decimal.TryParse(StudentAnswerTextBox.Text, out studentAnswer))
+            if (decimal.TryParse(StudentAnswerTextBox.Text.Trim(), out studentAnswer))
             {
-                MathProblemSolved(studentAnswer);
+                bool isCorrect = MathProblemSolved(studentAnswer);
+
+                totalAttempts++;
+
+                if (isCorrect)
+                {
+                    correctCount++;
+                    MessageBox.Show("Congratulations! You got it right!", "Math Contest", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    incorrectCount++;
+
+                    // Calculate the correct answer to display (duplicated logic is minimal and keeps your original method unchanged)
+                    int firstNumber = int.Parse(FirstNumberTextBox.Text);
+                    int secondNumber = int.Parse(SecondNumberTextBox.Text);
+                    int correctAnswer = 0;
+
+                    if (AddRadioButton.Checked) correctAnswer = firstNumber + secondNumber;
+                    else if (SubtractRadioButton.Checked) correctAnswer = firstNumber - secondNumber;
+                    else if (MultiplyRadioButton.Checked) correctAnswer = firstNumber * secondNumber;
+                    else if (DivideRadioButton.Checked) correctAnswer = (secondNumber != 0) ? firstNumber / secondNumber : 0;
+
+                    MessageBox.Show($"Sorry, the correct answer is {correctAnswer}.", "Math Contest", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                // Clear the student's answer and generate the next problem
+                StudentAnswerTextBox.Text = "";
+                GenerateProblem();
+
+                // Summary button is now available (at least one problem has been submitted)
+                SummeryButton.Enabled = true;
             }
             else
             {
-                // Handle invalid input
+                MessageBox.Show("Please enter a valid number for your answer.", "Invalid Answer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
         private void SummeryButton_Click(object sender, EventArgs e)
         {
             int totalProblems = 0; // Track total problems attempted
@@ -167,6 +234,7 @@ namespace MathContest
         private void ClearButton_Click(object sender, EventArgs e)
         {
             SetDefaults();
+            ValidateFields();
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
