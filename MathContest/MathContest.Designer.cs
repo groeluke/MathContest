@@ -68,6 +68,7 @@
             SubmitButton.TabIndex = 0;
             SubmitButton.Text = "&Submit";
             SubmitButton.UseVisualStyleBackColor = true;
+            SubmitButton.Click += SubmitButton_Click;
             // 
             // ClearButton
             // 
@@ -77,6 +78,7 @@
             ClearButton.TabIndex = 1;
             ClearButton.Text = "&Clear";
             ClearButton.UseVisualStyleBackColor = true;
+            ClearButton.Click += ClearButton_Click;
             // 
             // SummeryButton
             // 
@@ -86,6 +88,7 @@
             SummeryButton.TabIndex = 2;
             SummeryButton.Text = "S&ummery";
             SummeryButton.UseVisualStyleBackColor = true;
+            SummeryButton.Click += SummeryButton_Click;
             // 
             // ExitButton
             // 
@@ -95,6 +98,7 @@
             ExitButton.TabIndex = 3;
             ExitButton.Text = "E&xit";
             ExitButton.UseVisualStyleBackColor = true;
+            ExitButton.Click += ExitButton_Click;
             // 
             // ButtonsGroupBox
             // 
@@ -151,6 +155,8 @@
             GradeTextBox.Name = "GradeTextBox";
             GradeTextBox.Size = new Size(46, 33);
             GradeTextBox.TabIndex = 3;
+            MainToolTip.SetToolTip(GradeTextBox, "Enter a grde 1 - 4");
+            GradeTextBox.TextChanged += GradeTextBox_TextChanged;
             // 
             // AgeTextBox
             // 
@@ -158,6 +164,8 @@
             AgeTextBox.Name = "AgeTextBox";
             AgeTextBox.Size = new Size(46, 33);
             AgeTextBox.TabIndex = 2;
+            MainToolTip.SetToolTip(AgeTextBox, "Enter an age 7 - 11");
+            AgeTextBox.TextChanged += AgeTextBox_TextChanged;
             // 
             // NameTextBox
             // 
@@ -165,6 +173,7 @@
             NameTextBox.Name = "NameTextBox";
             NameTextBox.Size = new Size(206, 33);
             NameTextBox.TabIndex = 1;
+            NameTextBox.TextChanged += NameTextBox_TextChanged;
             // 
             // NameLabel
             // 
@@ -265,6 +274,7 @@
             DivideRadioButton.TabStop = true;
             DivideRadioButton.Text = "Divide";
             DivideRadioButton.UseVisualStyleBackColor = true;
+            DivideRadioButton.CheckedChanged += DivideRadioButton_CheckedChanged;
             // 
             // MultiplyRadioButton
             // 
@@ -276,6 +286,7 @@
             MultiplyRadioButton.TabStop = true;
             MultiplyRadioButton.Text = "Multiply";
             MultiplyRadioButton.UseVisualStyleBackColor = true;
+            MultiplyRadioButton.CheckedChanged += MultiplyRadioButton_CheckedChanged;
             // 
             // SubtractRadioButton
             // 
@@ -287,6 +298,7 @@
             SubtractRadioButton.TabStop = true;
             SubtractRadioButton.Text = "Subtract";
             SubtractRadioButton.UseVisualStyleBackColor = true;
+            SubtractRadioButton.CheckedChanged += SubtractRadioButton_CheckedChanged;
             // 
             // AddRadioButton
             // 
@@ -298,6 +310,7 @@
             AddRadioButton.TabStop = true;
             AddRadioButton.Text = "Add";
             AddRadioButton.UseVisualStyleBackColor = true;
+            AddRadioButton.CheckedChanged += AddRadioButton_CheckedChanged;
             // 
             // MathContest
             // 

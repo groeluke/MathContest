@@ -18,7 +18,6 @@ namespace MathContest
         {
             InitializeComponent();
             SetDefaults();
-            ValidateFields();
         }
 
         //Custom Methods ------------------------------------------------------
@@ -39,6 +38,7 @@ namespace MathContest
             SecondNumberTextBox.ReadOnly = true;
             StudentAnswerTextBox.Enabled = false;
             // Set default values for all controls and reset any state variables as needed
+            ResetSummary();
         }
 
         void ResetSummary()
@@ -125,17 +125,17 @@ namespace MathContest
             FirstNumberTextBox.Text = firstNumber.ToString();
             SecondNumberTextBox.Text = secondNumber.ToString();
         }
-        
+
         bool MathProblemSolved(decimal studentAnswer)
         {
             bool valid = false;
             int firstNumber = int.Parse(FirstNumberTextBox.Text);
             int secondNumber = int.Parse(SecondNumberTextBox.Text);
 
-            switch(true)
-                { 
-                    case bool when AddRadioButton.Checked:
-                        int sum = firstNumber + secondNumber;
+            switch (true)
+            {
+                case bool when AddRadioButton.Checked:
+                    int sum = firstNumber + secondNumber;
                     if (StudentAnswerTextBox.Text == sum.ToString())
                     {
                         valid = true;
@@ -145,9 +145,9 @@ namespace MathContest
                         valid = false;
                     }
                     // Generate addition problem
-                        break;
-                    case bool when SubtractRadioButton.Checked:
-                        int difference = firstNumber - secondNumber;
+                    break;
+                case bool when SubtractRadioButton.Checked:
+                    int difference = firstNumber - secondNumber;
                     if (StudentAnswerTextBox.Text == difference.ToString())
                     {
                         valid = true;
@@ -158,8 +158,8 @@ namespace MathContest
                     }
                     // Generate subtraction problem
                     break;
-                    case bool when MultiplyRadioButton.Checked:
-                        int product = firstNumber * secondNumber;
+                case bool when MultiplyRadioButton.Checked:
+                    int product = firstNumber * secondNumber;
                     if (StudentAnswerTextBox.Text == product.ToString())
                     {
                         valid = true;
@@ -170,8 +170,8 @@ namespace MathContest
                     }
                     // Generate multiplication problem
                     break;
-                    case bool when DivideRadioButton.Checked:
-                        int quotient = firstNumber / secondNumber;
+                case bool when DivideRadioButton.Checked:
+                    int quotient = firstNumber / secondNumber;
                     if (StudentAnswerTextBox.Text == quotient.ToString())
                     {
                         valid = true;
@@ -182,57 +182,47 @@ namespace MathContest
                     }
                     // Generate division problem
                     break;
-                }
+            }
             return valid;
         }
-        // Event Handlers -----------------------------------------------------
 
+        // Event Handlers -----------------------------------------------------
         private void SubmitButton_Click(object sender, EventArgs e)
         {
-            int totalAttempts = 0;
-            int correctCount = 0;
-            int incorrectCount = 0;
-
-            decimal studentAnswer;
-            if (decimal.TryParse(StudentAnswerTextBox.Text.Trim(), out studentAnswer))
+            if (!decimal.TryParse(StudentAnswerTextBox.Text.Trim(), out decimal studentAnswer))
             {
-                bool isCorrect = MathProblemSolved(studentAnswer);
+                MessageBox.Show("Please enter a valid number.", "Invalid Answer");
+                return;
+            }
 
-                totalAttempts++;
+            bool isCorrect = MathProblemSolved(studentAnswer);
+            totalAttempts++;
 
-                if (isCorrect)
-                {
-                    correctCount++;
-                    MessageBox.Show("Congratulations! You got it right!", "Math Contest", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    incorrectCount++;
-
-                    // Calculate the correct answer to display (duplicated logic is minimal and keeps your original method unchanged)
-                    int firstNumber = int.Parse(FirstNumberTextBox.Text);
-                    int secondNumber = int.Parse(SecondNumberTextBox.Text);
-                    int correctAnswer = 0;
-
-                    if (AddRadioButton.Checked) correctAnswer = firstNumber + secondNumber;
-                    else if (SubtractRadioButton.Checked) correctAnswer = firstNumber - secondNumber;
-                    else if (MultiplyRadioButton.Checked) correctAnswer = firstNumber * secondNumber;
-                    else if (DivideRadioButton.Checked) correctAnswer = (secondNumber != 0) ? firstNumber / secondNumber : 0;
-
-                    MessageBox.Show($"Sorry, the correct answer is {correctAnswer}.", "Math Contest", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                // Clear the student's answer and generate the next problem
-                StudentAnswerTextBox.Text = "";
-                GenerateProblem();
-
-                // Summary button is now available (at least one problem has been submitted)
-                SummeryButton.Enabled = true;
+            if (isCorrect)
+            {
+                correctCount++;
+                MessageBox.Show("Congratulations! You got it right!", "Math Contest");
             }
             else
             {
-                MessageBox.Show("Please enter a valid number for your answer.", "Invalid Answer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                incorrectCount++;
+                int correctAnswer = AddRadioButton.Checked ? int.Parse(FirstNumberTextBox.Text) + int.Parse(SecondNumberTextBox.Text) :
+                                  SubtractRadioButton.Checked ? int.Parse(FirstNumberTextBox.Text) - int.Parse(SecondNumberTextBox.Text) :
+                                  MultiplyRadioButton.Checked ? int.Parse(FirstNumberTextBox.Text) * int.Parse(SecondNumberTextBox.Text) :
+                                  (int.Parse(SecondNumberTextBox.Text) != 0 ? int.Parse(FirstNumberTextBox.Text) / int.Parse(SecondNumberTextBox.Text) : 0);
+
+                MessageBox.Show($"Sorry, the correct answer is {correctAnswer}.", "Math Contest");
             }
+
+            StudentAnswerTextBox.Clear();
+            GenerateProblem();
+            SummeryButton.Enabled = true;
+        }
+
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+            SetDefaults();
+            ValidateFields();
         }
 
         private void SummeryButton_Click(object sender, EventArgs e)
@@ -245,11 +235,6 @@ namespace MathContest
             };
             // Display summary of results
         }
-        private void ClearButton_Click(object sender, EventArgs e)
-        {
-            SetDefaults();
-            ValidateFields();
-        }
 
         private void ExitButton_Click(object sender, EventArgs e)
         {
@@ -259,34 +244,28 @@ namespace MathContest
         private void AddRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (AddRadioButton.Checked)
-            GenerateProblem();
+                GenerateProblem();
         }
 
         private void SubtractRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (SubtractRadioButton.Checked)
-            GenerateProblem();
+                GenerateProblem();
         }
 
         private void MultiplyRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (MultiplyRadioButton.Checked)
-            GenerateProblem();
+                GenerateProblem();
         }
 
         private void DivideRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (DivideRadioButton.Checked)
-            GenerateProblem();
+                GenerateProblem();
         }
 
         private void NameTextBox_TextChanged(object sender, EventArgs e)
-        {
-            ResetSummary();
-            ValidateFields();
-        }
-
-        private void GradeTextBox_TextChanged(object sender, EventArgs e)
         {
             ResetSummary();
             ValidateFields();
@@ -298,5 +277,10 @@ namespace MathContest
             ValidateFields();
         }
 
+        private void GradeTextBox_TextChanged(object sender, EventArgs e)
+        {
+            ResetSummary();
+            ValidateFields();
+        }
     }
 }
