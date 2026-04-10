@@ -10,6 +10,10 @@ namespace MathContest
 {
     public partial class MathContest : Form
     {
+        private int correctCount = 0;
+        private int incorrectCount = 0;
+        private int totalAttempts = 0;
+
         public MathContest()
         {
             InitializeComponent();
@@ -37,6 +41,17 @@ namespace MathContest
             // Set default values for all controls and reset any state variables as needed
         }
 
+        void ResetSummary()
+        {
+            correctCount = 0;
+            incorrectCount = 0;
+            totalAttempts = 0;
+            SummeryButton.Enabled = false;
+            // Reset any of the summary tracking variables and disable -
+            // the summary button until at least one problem has been attempted
+        }
+
+
         void ValidateFields()
         {
             bool valid = true;
@@ -52,7 +67,7 @@ namespace MathContest
                 NameTextBox.BackColor = Color.White;
             }
 
-            // Grade - must be integer 1-4
+            // Grade must be integer 1-4
             int grade;
             if (!int.TryParse(GradeTextBox.Text.Trim(), out grade) || grade < 1 || grade > 4)
             {
@@ -64,7 +79,7 @@ namespace MathContest
                 GradeTextBox.BackColor = Color.White;
             }
 
-            // Age - must be integer 7-11
+            // Age must be integer 7-11
             int age;
             if (!int.TryParse(AgeTextBox.Text.Trim(), out age) || age < 7 || age > 11)
             {
@@ -76,11 +91,10 @@ namespace MathContest
                 AgeTextBox.BackColor = Color.White;
             }
 
-            // Enable the contest area ONLY when all student info is valid
+            // Enable the contest area only when all student info is valid
             if (valid)
             {
                 // Only generate a new problem the first time the contest becomes enabled
-                // (prevents regenerating on every keystroke after the student info is valid)
                 if (!ProblemTypeGroupBox.Enabled)
                 {
                     ProblemTypeGroupBox.Enabled = true;
@@ -130,7 +144,7 @@ namespace MathContest
                     {
                         valid = false;
                     }
-                        // Generate addition problem
+                    // Generate addition problem
                         break;
                     case bool when SubtractRadioButton.Checked:
                         int difference = firstNumber - secondNumber;
@@ -242,18 +256,45 @@ namespace MathContest
             this.Close();
         }
 
+        private void AddRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (AddRadioButton.Checked)
+            GenerateProblem();
+        }
+
+        private void SubtractRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SubtractRadioButton.Checked)
+            GenerateProblem();
+        }
+
+        private void MultiplyRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (MultiplyRadioButton.Checked)
+            GenerateProblem();
+        }
+
+        private void DivideRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (DivideRadioButton.Checked)
+            GenerateProblem();
+        }
+
         private void NameTextBox_TextChanged(object sender, EventArgs e)
         {
+            ResetSummary();
             ValidateFields();
         }
 
         private void GradeTextBox_TextChanged(object sender, EventArgs e)
         {
+            ResetSummary();
             ValidateFields();
         }
 
         private void AgeTextBox_TextChanged(object sender, EventArgs e)
         {
+            ResetSummary();
             ValidateFields();
         }
 
