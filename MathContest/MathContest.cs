@@ -201,7 +201,7 @@ namespace MathContest
             if (isCorrect)
             {
                 correctCount++;
-                MessageBox.Show("Congratulations! You got it right!", "Math Contest");
+                MessageBox.Show("Correct nice work!", correctCount + " correct");
             }
             else
             {
@@ -213,7 +213,6 @@ namespace MathContest
 
                 MessageBox.Show($"Sorry, the correct answer is {correctAnswer}.", "Math Contest");
             }
-
             StudentAnswerTextBox.Clear();
             GenerateProblem();
             SummeryButton.Enabled = true;
@@ -231,7 +230,7 @@ namespace MathContest
             SubmitButton.Click += (s, args) => totalProblems++;
             SummeryButton.Click += (s, args) =>
             {
-                MessageBox.Show($"Total Problems Attempted: {totalProblems}");
+                MessageBox.Show($"{NameTextBox.Text} got {correctCount++} out of possible {totalAttempts++} problems.");
             };
             // Display summary of results
         }
