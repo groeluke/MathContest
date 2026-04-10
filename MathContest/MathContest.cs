@@ -13,6 +13,7 @@ namespace MathContest
         private int correctCount = 0;
         private int incorrectCount = 0;
         private int totalAttempts = 0;
+        private int totalProblems = 0;
 
         public MathContest()
         {
@@ -37,7 +38,7 @@ namespace MathContest
             FirstNumberTextBox.ReadOnly = true;
             SecondNumberTextBox.ReadOnly = true;
             StudentAnswerTextBox.Enabled = false;
-            // Set default values for all controls and reset any state variables as needed
+            // set default values for all controls and reset any state variables as needed
             ResetSummary();
         }
 
@@ -46,8 +47,9 @@ namespace MathContest
             correctCount = 0;
             incorrectCount = 0;
             totalAttempts = 0;
+            totalProblems = 0;
             SummeryButton.Enabled = false;
-            // Reset any of the summary tracking variables and disable the
+            // reset any of the summary tracking variables and disable the
             // summary button until at least one problem has been attempted
         }
 
@@ -56,7 +58,7 @@ namespace MathContest
         {
             bool valid = true;
 
-            // Name text box cannot be empty
+            // name text box cannot be empty
             if (string.IsNullOrEmpty(NameTextBox.Text.Trim()))
             {
                 valid = false;
@@ -67,7 +69,7 @@ namespace MathContest
                 NameTextBox.BackColor = Color.White;
             }
 
-            // Grade text box must be in the range of 1-4
+            // grade text box must be in the range of 1-4
             int grade;
             if (!int.TryParse(GradeTextBox.Text.Trim(), out grade) || grade < 1 || grade > 4)
             {
@@ -79,7 +81,7 @@ namespace MathContest
                 GradeTextBox.BackColor = Color.White;
             }
 
-            // Age text box must be in the range 7-11
+            // age text box must be in the range 7-11
             int age;
             if (!int.TryParse(AgeTextBox.Text.Trim(), out age) || age < 7 || age > 11)
             {
@@ -91,10 +93,10 @@ namespace MathContest
                 AgeTextBox.BackColor = Color.White;
             }
 
-            // Enable the contest area only when all student info is valid
+            // enable the contest area only when all student info is valid
             if (valid)
             {
-                // Only generate a new problem the first time the contest becomes enabled
+                // only generate a new problem the first time the contest becomes enabled
                 if (!ProblemTypeGroupBox.Enabled)
                 {
                     ProblemTypeGroupBox.Enabled = true;
@@ -104,13 +106,14 @@ namespace MathContest
                     GenerateProblem();   // First problem for this student
                 }
             }
-            else // Don't allow the user to interact with the form until all fields are valid
+            else // don't allow the user to interact with the form until all fields are valid
             {
                 SubmitButton.Enabled = false;
                 ProblemTypeGroupBox.Enabled = false;
                 StudentAnswerTextBox.Enabled = false;
                 StudentAnswerLabel.Enabled = false;
             }
+            // validate the user input for the name, grade, and age fields
         }
 
         void GenerateProblem()
@@ -128,14 +131,14 @@ namespace MathContest
             bool valid = false;
             int firstNumber = int.Parse(FirstNumberTextBox.Text);
             int secondNumber = int.Parse(SecondNumberTextBox.Text);
-            // 
+            // determine which operation is selected and calculate the correct answer
 
             switch (true)
             {
                 case bool when AddRadioButton.Checked:
                     int sum = firstNumber + secondNumber;
                     if (StudentAnswerTextBox.Text == sum.ToString())
-                        // Compare the student's answer to the correct answer
+                        // compare the student's answer to the correct answer
                     {
                         valid = true;
                     }
@@ -143,12 +146,11 @@ namespace MathContest
                     {
                         valid = false;
                     }
-                    // Generate addition problem
                     break;
                 case bool when SubtractRadioButton.Checked:
                     int difference = firstNumber - secondNumber;
                     if (StudentAnswerTextBox.Text == difference.ToString())
-                        // Compare the student's answer to the correct answer
+                        // compare the student's answer to the correct answer
                     {
                         valid = true;
                     }
@@ -156,12 +158,11 @@ namespace MathContest
                     {
                         valid = false;
                     }
-                    // Generate subtraction problem
                     break;
                 case bool when MultiplyRadioButton.Checked:
                     int product = firstNumber * secondNumber;
                     if (StudentAnswerTextBox.Text == product.ToString())
-                        // Compare the student's answer to the correct answer
+                        // compare the student's answer to the correct answer
                     {
                         valid = true;
                     }
@@ -169,12 +170,11 @@ namespace MathContest
                     {
                         valid = false;
                     }
-                    // Generate multiplication problem
                     break;
                 case bool when DivideRadioButton.Checked:
                     int quotient = firstNumber / secondNumber;
                     if (StudentAnswerTextBox.Text == quotient.ToString())
-                        // Compare the student's answer to the correct answer
+                        // compare the student's answer to the correct answer
                     {
                         valid = true;
                     }
@@ -182,7 +182,6 @@ namespace MathContest
                     {
                         valid = false;
                     }
-                    // Generate division problem
                     break;
             }
             return valid;
@@ -192,14 +191,23 @@ namespace MathContest
         // Event Handlers -----------------------------------------------------
         private void SubmitButton_Click(object sender, EventArgs e)
         {
-            int studentAnswer = int.Parse(StudentAnswerTextBox.Text);
+            int studentAnswer = 0;
+            try
+            {
+                studentAnswer = int.Parse(StudentAnswerTextBox.Text);
+                totalAttempts++;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please enter a valid number for your answer.", "Input Error");
+            }
+
             bool isCorrect = MathProblemSolved(studentAnswer);
-            totalAttempts++;
 
             if (isCorrect) // if correct increment the count and show that to the user
             {
                 correctCount++;
-                MessageBox.Show("Correct nice work!", correctCount + " correct");
+                MessageBox.Show("Correct, nice work!", " Correct");
             }
             else // if incorrect increment the count and show that to the user
             {
@@ -209,37 +217,33 @@ namespace MathContest
             StudentAnswerTextBox.Clear();
             GenerateProblem();
             SummeryButton.Enabled = true;
-            // Check the user's answer, update the counts of correct and
+            // check the user's answer, update the counts of correct and
             // incorrect answers, and provide feedback to the user.
-            // Then generate a new problem for the user to solve.
+            // then generate a new problem for the user to solve.
         }
 
         private void ClearButton_Click(object sender, EventArgs e)
         {
             SetDefaults();
             ValidateFields();
-            // Clear all fields and reset the form to its default state
+            // clear all fields and reset the form to its default state
         }
 
         private void SummeryButton_Click(object sender, EventArgs e)
         {
-            int totalProblems = 0; // Track total problems attempted
-            SubmitButton.Click += (s, args) => totalProblems++; 
-            // Increment total problems attempted each time the submit button is clicked
-            SummeryButton.Click += (s, args) => 
-            // Display the summary of results when the summary button is clicked
+            totalProblems = 0; // track total problems attempted
             {
                 MessageBox.Show($"" +
-                    $"     {NameTextBox.Text} got {correctCount++} out\n" +
-                    $"of possible {totalAttempts++} problems.");
+                    $"     {NameTextBox.Text} got {correctCount} out\n" +
+                    $"of possible {totalAttempts} problems.");
             };
-            // Display summary of results
+            // display summary of results
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
         {
             this.Close();
-            // Close the form
+            // close the form
         }
 
         private void AddRadioButton_CheckedChanged(object sender, EventArgs e)
